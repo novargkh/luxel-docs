@@ -5,6 +5,7 @@ import type { Grid } from "@/lib/grid";
 import { analyze, docDateText, type Analysis, type Choices, type Issue } from "@/lib/cashbook";
 import { kyivNow, money } from "@/lib/format";
 import { fileBase, summary } from "@/lib/layout";
+import { DocPreview } from "./DocPreview";
 
 type Loaded = { name: string; grid: Grid; createdAt: string };
 
@@ -36,9 +37,11 @@ export function Converter() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [drag, setDrag] = useState(false);
+  const [preview, setPreview] = useState(false);
   const input = useRef<HTMLInputElement>(null);
 
   const reset = () => {
+    setPreview(false);
     setLoaded(null);
     setResult(null);
     setError(null);
@@ -126,6 +129,7 @@ export function Converter() {
   };
 
   const ready = result && result.issues.length === 0;
+  const closePreview = useCallback(() => setPreview(false), []);
 
   return (
     <div className="space-y-5">
@@ -190,6 +194,16 @@ export function Converter() {
           {result.doc.kind === "cashbook" && <SummaryPreview result={result} />}
 
           <div>
+            <button
+              onClick={() => setPreview(true)}
+              className="mb-3 flex w-full items-center justify-center gap-2 rounded-xl border border-line px-5 py-3.5 text-sm font-semibold transition hover:border-ink/40"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              Переглянути документ
+            </button>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <button
                 disabled={!ready || !!busy}
@@ -209,6 +223,17 @@ export function Converter() {
             {!ready && <p className="mt-2 text-center text-xs text-muted">Спочатку оберіть, що робити з помилками вище</p>}
           </div>
         </div>
+      )}
+
+      {preview && loaded && result && (
+        <DocPreview
+          doc={result.doc}
+          createdAt={loaded.createdAt}
+          canDownload={!!ready}
+          busy={!!busy}
+          onDownload={download}
+          onClose={closePreview}
+        />
       )}
     </div>
   );
