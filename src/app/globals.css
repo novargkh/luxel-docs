@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@font-face { font-family: "Manrope"; src: url("/fonts/Manrope_400Regular.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Manrope"; src: url("/fonts/Manrope_500Medium.ttf") format("truetype"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "Manrope"; src: url("/fonts/Manrope_600SemiBold.ttf") format("truetype"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "Manrope"; src: url("/fonts/Manrope_700Bold.ttf") format("truetype"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Manrope"; src: url("/fonts/Manrope_800ExtraBold.ttf") format("truetype"); font-weight: 800; font-display: swap; }
+
+@theme {
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --color-brand: #e92620;
+  --color-brand-soft: #fdedec;
+  --color-ink: #1a1a1a;
+  --color-muted: #7a7a7a;
+  --color-line: #e4e4e4;
+  --color-soft: #f6f6f6;
+  --color-ok: #1f8a4c;
+  --color-ok-soft: #ebf7f0;
+}
+
+html, body { background: #ffffff; color: var(--color-ink); }
+body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+.tabular { font-variant-numeric: tabular-nums; white-space: nowrap; }
