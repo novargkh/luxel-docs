@@ -1,10 +1,9 @@
 // Usage: npx tsx scripts/render.ts <file.xlsx> <outDir> — builds the XLSX and PDF like the site does.
 import fs from "node:fs";
 import path from "node:path";
-import ExcelJS from "exceljs";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const pdfmake = require("pdfmake");
-import { mainSheet, readGrid } from "../src/lib/grid";
+import { readFileGrid } from "../src/lib/readFile";
 import { analyze } from "../src/lib/cashbook";
 import { buildXlsx } from "../src/lib/buildXlsx";
 import { buildPdfDefinition, PDF_FONTS, PDF_FONT_FILES } from "../src/lib/buildPdf";
@@ -13,9 +12,8 @@ import { kyivNow } from "../src/lib/format";
 
 async function main() {
   const [file, out, fix] = process.argv.slice(2);
-  const wb = new ExcelJS.Workbook();
-  await wb.xlsx.readFile(file);
-  const grid = readGrid(mainSheet(wb));
+  const buf = fs.readFileSync(file);
+  const grid = await readFileGrid(file, buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength));
   let res = analyze(grid, path.basename(file), { fixed: new Set(), kept: new Set() });
   console.log("issues:", res.issues.map((i) => `${i.id} | ${i.where} | ${i.text} | ${i.fix}`));
   const fixed = new Set<string>();

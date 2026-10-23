@@ -6,6 +6,7 @@ import { analyze, docDateText, type Analysis, type Choices, type Issue } from "@
 import { kyivNow, money } from "@/lib/format";
 import { fileBase, summary } from "@/lib/layout";
 import { DocPreview } from "./DocPreview";
+import { ACCEPTED, readFileGrid } from "@/lib/readFile";
 
 type Loaded = { name: string; grid: Grid; createdAt: string };
 
@@ -52,12 +53,8 @@ export function Converter() {
   const open = useCallback(async (file: File) => {
     setError(null);
     setResult(null);
-    if (/\.xls$/i.test(file.name)) {
-      setError("Це старий формат .xls. Відкрийте файл в Excel і збережіть як «Книга Excel (.xlsx)».");
-      return;
-    }
-    if (!/\.xlsx$/i.test(file.name)) {
-      setError("Потрібен файл Excel у форматі .xlsx");
+    if (!ACCEPTED.test(file.name)) {
+      setError("Потрібен файл Excel у форматі .xlsx або .xls");
       return;
     }
     if (file.size > MAX_SIZE) {
@@ -66,11 +63,7 @@ export function Converter() {
     }
     setBusy("Читаємо файл…");
     try {
-      const ExcelJS = (await import("exceljs")).default;
-      const { mainSheet, readGrid } = await import("@/lib/grid");
-      const wb = new ExcelJS.Workbook();
-      await wb.xlsx.load(await file.arrayBuffer());
-      const grid = readGrid(mainSheet(wb));
+      const grid = await readFileGrid(file.name, await file.arrayBuffer());
       if (!grid.cells.size) throw new Error("Аркуш порожній");
       const fresh: Choices = { fixed: new Set(), kept: new Set() };
       setLoaded({ name: file.name, grid, createdAt: kyivNow() });
@@ -157,13 +150,13 @@ export function Converter() {
             <path d="M14 3v5h5M12 18v-6M9 15l3-3 3 3" />
           </svg>
           <span className="mt-4 text-base font-semibold">Перетягніть файл Excel сюди</span>
-          <span className="mt-1 text-sm text-muted">або натисніть, щоб вибрати (.xlsx)</span>
+          <span className="mt-1 text-sm text-muted">або натисніть, щоб вибрати (.xlsx, .xls)</span>
         </button>
       )}
       <input
         ref={input}
         type="file"
-        accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
         className="hidden"
         onChange={(e) => {
           const f = e.target.files?.[0];
