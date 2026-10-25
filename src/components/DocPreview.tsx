@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useEffect } from "react";
@@ -65,8 +64,7 @@ export function DocPreview({ doc, createdAt, canDownload, busy, onDownload, onCl
 
       <div className="flex-1 overflow-auto px-3 py-6 sm:px-6">
         <article className="mx-auto w-full max-w-[900px] bg-white px-5 py-6 text-ink shadow-[0_1px_3px_rgba(0,0,0,0.12)] sm:px-10 sm:py-9">
-          <header className="flex items-center justify-between gap-4">
-            <img src="/logo.png" alt="LUXEL" className="h-[18px] w-auto" />
+          <header className="flex items-center justify-end gap-4">
             <span className="text-[11px] text-muted">
               {doc.title}
               {docDateShort(doc) ? ` · ${docDateShort(doc)}` : ""}
@@ -81,7 +79,6 @@ export function DocPreview({ doc, createdAt, canDownload, busy, onDownload, onCl
 
           <footer className="mt-10 flex items-center justify-between gap-3 border-t border-line pt-3 text-[11px] text-muted">
             <span>Сформовано: {createdAt}</span>
-            <span className="font-extrabold tracking-[0.2em] text-brand">LUXEL</span>
           </footer>
         </article>
       </div>

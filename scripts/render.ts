@@ -23,15 +23,14 @@ async function main() {
     console.log("after fix:", res.issues.map((i) => `${i.id} | ${i.text}`));
   }
   console.log("stats", res.stats, "fixed", res.fixed.map((i) => i.id));
-  const logo = fs.readFileSync("public/logo.png").toString("base64");
   const createdAt = kyivNow();
   fs.mkdirSync(out, { recursive: true });
   const base = path.join(out, fileBase(res.doc));
-  fs.writeFileSync(base + ".xlsx", Buffer.from(await buildXlsx(res.doc, { logoBase64: "data:image/png;base64," + logo, createdAt })));
+  fs.writeFileSync(base + ".xlsx", Buffer.from(await buildXlsx(res.doc, { createdAt })));
   for (const f of PDF_FONT_FILES) pdfmake.virtualfs.writeFileSync(f, fs.readFileSync(path.join("public/fonts", f)));
   pdfmake.addFonts(PDF_FONTS);
   pdfmake.setUrlAccessPolicy(() => false);
-  const def = buildPdfDefinition(res.doc, { logoDataUrl: "data:image/png;base64," + logo, createdAt });
+  const def = buildPdfDefinition(res.doc, { createdAt });
   fs.writeFileSync(base + ".pdf", await pdfmake.createPdf(def).getBuffer());
   console.log("written", base);
 }

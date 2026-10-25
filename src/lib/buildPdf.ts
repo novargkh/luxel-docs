@@ -3,7 +3,7 @@ import { docDateShort, docDateText, type CashBook, type Doc, type Table } from "
 import { money } from "./format";
 import { columns, lines, summary } from "./layout";
 
-export type PdfBrand = { logoDataUrl: string; createdAt: string };
+export type PdfBrand = { createdAt: string };
 
 const RED = "#E92620";
 const INK = "#1A1A1A";
@@ -50,15 +50,15 @@ function frame(doc: Doc, brand: PdfBrand, body: Content[]): TDocumentDefinitions
   return {
     pageSize: "A4",
     pageOrientation: "portrait",
-    pageMargins: [32, 58, 32, 44],
+    pageMargins: [32, 50, 32, 44],
     info: { title: `LUXEL — ${doc.title}${docDateShort(doc) ? " " + docDateShort(doc) : ""}`, author: "LUXEL", creator: "LUXEL" },
     defaultStyle: { font: "Manrope", fontSize: 8, color: INK, lineHeight: 1.15 },
     header: () => ({
-      margin: [32, 22, 32, 0],
-      columns: [
-        { image: brand.logoDataUrl, width: 58 },
-        { text: `${doc.title}${docDateShort(doc) ? "  ·  " + docDateShort(doc) : ""}`, alignment: "right", fontSize: 7.5, color: MUTED, margin: [0, 4, 0, 0] },
-      ],
+      margin: [32, 24, 32, 0],
+      text: `${doc.title}${docDateShort(doc) ? "  ·  " + docDateShort(doc) : ""}`,
+      alignment: "right",
+      fontSize: 7.5,
+      color: MUTED,
     }),
     footer: (page: number, pages: number) => ({
       margin: [32, 14, 32, 0],
@@ -68,7 +68,6 @@ function frame(doc: Doc, brand: PdfBrand, body: Content[]): TDocumentDefinitions
           margin: [0, 6, 0, 0],
           columns: [
             { text: `Сформовано: ${brand.createdAt}`, fontSize: 7, color: MUTED },
-            { text: "LUXEL", alignment: "center", fontSize: 7, color: RED, font: "ManropeSemi", bold: true, characterSpacing: 1.5 },
             { text: `Сторінка ${page} з ${pages}`, alignment: "right", fontSize: 7, color: MUTED },
           ],
         },

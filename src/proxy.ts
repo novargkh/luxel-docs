@@ -10,5 +10,5 @@ export async function proxy(req: NextRequest) {
 
 export const config = {
   // Everything except the login page and the public assets it needs.
-  matcher: ["/((?!login|_next/static|_next/image|fonts/|logo.png|favicon.ico|icon.png).*)"],
+  matcher: ["/((?!login|_next/static|_next/image|fonts/|favicon.ico|icon.png).*)"],
 };

@@ -89,11 +89,10 @@ export function Converter() {
     if (!result || !loaded) return;
     setBusy(kind === "pdf" ? "Готуємо PDF…" : "Готуємо XLSX…");
     try {
-      const logo = await asBase64("/logo.png");
       const name = fileBase(result.doc);
       if (kind === "xlsx") {
         const { buildXlsx } = await import("@/lib/buildXlsx");
-        const buf = await buildXlsx(result.doc, { logoBase64: `data:image/png;base64,${logo}`, createdAt: loaded.createdAt });
+        const buf = await buildXlsx(result.doc, { createdAt: loaded.createdAt });
         save(new Blob([buf], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }), `${name}.xlsx`);
       } else {
         const [{ buildPdfDefinition, PDF_FONTS, PDF_FONT_FILES }, pdfMod] = await Promise.all([
@@ -110,7 +109,7 @@ export function Converter() {
         };
         pm.addVirtualFileSystem(vfs);
         pm.addFonts(PDF_FONTS);
-        const def = buildPdfDefinition(result.doc, { logoDataUrl: `data:image/png;base64,${logo}`, createdAt: loaded.createdAt });
+        const def = buildPdfDefinition(result.doc, { createdAt: loaded.createdAt });
         save(await pm.createPdf(def).getBlob(), `${name}.pdf`);
       }
     } catch (e) {

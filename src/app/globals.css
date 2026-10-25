@@ -21,3 +21,29 @@
 html, body { background: #ffffff; color: var(--color-ink); }
 body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
 .tabular { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* Sign-in intro: logo assembles, then flies into the header (IntroShell). */
+.intro-hold [data-logo-target], .intro-reveal [data-logo-target] { visibility: hidden; }
+.intro-hold [data-intro-content] { opacity: 0; }
+.intro-reveal [data-intro-content] { animation: lx-content 700ms 150ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+@keyframes lx-content { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+.lx-part { transform-box: fill-box; transform-origin: center; animation-fill-mode: both; }
+.lx-swoosh-top { animation: lx-swoosh-r 800ms 80ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+.lx-swoosh-bottom { animation: lx-swoosh-l 800ms 80ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+.lx-l1, .lx-u, .lx-x, .lx-e, .lx-l2 {
+  animation: lx-rise 650ms cubic-bezier(0.22, 1.2, 0.36, 1) both;
+  animation-delay: calc(280ms + (var(--i) - 2) * 85ms);
+}
+.lx-reg-ring, .lx-reg-r { animation: lx-pop 450ms 900ms cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.lx-sheen { animation: lx-sheen 750ms 1150ms cubic-bezier(0.4, 0, 0.2, 1) both; }
+
+@keyframes lx-swoosh-r { from { opacity: 0; transform: translateX(55%) scaleX(0.4); } to { opacity: 1; transform: none; } }
+@keyframes lx-swoosh-l { from { opacity: 0; transform: translateX(-55%) scaleX(0.4); } to { opacity: 1; transform: none; } }
+@keyframes lx-rise { from { opacity: 0; transform: translateY(42%) scale(0.92); } to { opacity: 1; transform: none; } }
+@keyframes lx-pop { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: none; } }
+@keyframes lx-sheen { from { transform: skewX(-18deg) translateX(0); } to { transform: skewX(-18deg) translateX(2000px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .lx-part, .lx-sheen, .intro-reveal [data-intro-content] { animation: none; }
+}

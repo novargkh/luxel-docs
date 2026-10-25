@@ -2,7 +2,7 @@ import ExcelJS from "exceljs";
 import { docDateShort, docDateText, type CashBook, type Doc, type Table } from "./cashbook";
 import { columns, lines, type ColKey } from "./layout";
 
-export type BrandAssets = { logoBase64: string; createdAt: string };
+export type BrandAssets = { createdAt: string };
 
 const RED = "FFE92620";
 const INK = "FF1A1A1A";
@@ -31,7 +31,7 @@ function setupSheet(wb: ExcelJS.Workbook, doc: Doc, brand: BrandAssets, widths: 
     },
     headerFooter: {
       oddFooter:
-        `&L&"${FONT},Regular"&8&K7A7A7ALUXEL · ${doc.title}${docDateShort(doc) ? " · " + docDateShort(doc) : ""}` +
+        `&L&"${FONT},Regular"&8&K7A7A7A${doc.title}${docDateShort(doc) ? " · " + docDateShort(doc) : ""}` +
         `&C&"${FONT},Regular"&8&K7A7A7AСторінка &P з &N` +
         `&R&"${FONT},Regular"&8&K7A7A7AСформовано: ${brand.createdAt}`,
     },
@@ -40,13 +40,11 @@ function setupSheet(wb: ExcelJS.Workbook, doc: Doc, brand: BrandAssets, widths: 
   wb.creator = "LUXEL";
   wb.created = new Date();
 
-  // Brand header: small logo, title, date, creation stamp.
-  const logo = wb.addImage({ base64: brand.logoBase64, extension: "png" });
-  ws.addImage(logo, { tl: { col: 0.15, row: 0.35 }, ext: { width: 104, height: 28 }, editAs: "absolute" });
+  // Header: title, date, creation stamp (no logo in documents).
   ws.getRow(1).height = 24;
   ws.getRow(2).height = 16;
   const last = widths.length;
-  const titleCol = Math.min(3, last);
+  const titleCol = 1;
   ws.getCell(1, titleCol).value = doc.title;
   ws.getCell(1, titleCol).font = font({ size: 16, bold: true });
   ws.getCell(1, titleCol).alignment = { vertical: "middle" };

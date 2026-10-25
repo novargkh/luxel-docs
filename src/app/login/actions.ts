@@ -22,6 +22,8 @@ export async function login(_: LoginState, form: FormData): Promise<LoginState> 
     path: "/",
     maxAge: 60 * 60 * 24 * 30,
   });
+  // One-shot flag for the logo intro on the next page (IntroShell clears it).
+  (await cookies()).set("luxel_intro", "1", { path: "/", maxAge: 120, sameSite: "lax" });
   redirect("/");
 }
 
